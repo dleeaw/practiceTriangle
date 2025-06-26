@@ -49,7 +49,7 @@ namespace hello_triangle {
 
 /* What is happening here?
  1) CPU -> GPU: Supplying a vertex buffer of (position, color) and constant "transform" matrix and "brightness" factor
- 2) Vertex Stage: Transforming each 2D vertex to 3x3 matrix, emitting clip-space position + color
+ 2) Vertex Stage: Transforming each 2D vertex to 4D matrix, emitting clip-space position + color
  3) Rasterization: Filling in all fragment positions inside the triangle, interpolating "color"
  4) Fragment Stage: Applying brightness to the interpolated color, writing final pixel RGBA
 */
