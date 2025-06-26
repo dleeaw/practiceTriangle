@@ -12,10 +12,19 @@ import SwiftUI
 @Observable
 final class ContentModel {
     
-    let device: MTLDevice
+    let device: MTLDevice                       // Device
+    let commandQueue: MTLCommandQueue           // Command Queue
+    let triangleRenderer: TriangleRenderer      // Triangle Renderer
     
     init() {
-        self.device = MTLCreateSystemDefaultDevice()!
+        let device = MTLCreateSystemDefaultDevice()!                // grab the GPU
+        let commandQueue = device.makeCommandQueue()!               // make a work queue
+        let library = device.makeDefaultLibrary()!                  // load my vertex shader and fragment shader
+        let triangleRenderer = TriangleRenderer(device, library)    // build my render pipeline and vertex data
+        
+        self.device = device
+        self.commandQueue = commandQueue
+        self.triangleRenderer = triangleRenderer
     }
     
     func onViewResized(_ view: MTKView, _ size: CGSize) {
@@ -23,7 +32,24 @@ final class ContentModel {
     }
     
     func onDraw(_ view: MTKView) {
+        guard
+            let commandBuffer = commandQueue.makeCommandBuffer(),   // Command Buffer
+            let drawable = view.currentDrawable,
+            let passDescriptor = view.currentRenderPassDescriptor,  // Render Pass Descriptor
+            let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: passDescriptor)
+        else { return }
         
+        // 1) Encode my triangle's draw call
+        triangleRenderer.draw(encoder)
+        
+        // 2) Finish encoding
+        encoder.endEncoding()
+        
+        // 3) Show the rendered triangle to screen
+        commandBuffer.present(drawable)
+        
+        // 4) Commit the work to the GPU
+        commandBuffer.commit()
     }
 }
 
