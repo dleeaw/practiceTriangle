@@ -84,11 +84,20 @@ final class TriangleRenderer {
         self.vertexBuffer = vertexBuffer
     }
     
+    var aspectRatio: Float = 1.0                // This is for adjusting the aspect ratio of the triangle
     var transform: simd_float4x4 = .init(1.0)   // Identity Matrix
     var brightness: Float = 1.0
     
     // Encoder -> telling GPU what to do
     func draw(_ encoder: MTLRenderCommandEncoder) {
+        
+        // 0) Adjust the aspect ratio (width:height) of the triangle
+        var transform = self.transform
+        if aspectRatio > 1.0 {
+            transform = .scale(x: 1 / aspectRatio) * transform
+        } else {
+            transform = .scale(y: aspectRatio) * transform
+        }
         
         // 1) Select Pipeline
         encoder.setRenderPipelineState(self.pipelineState)
@@ -99,7 +108,7 @@ final class TriangleRenderer {
                                 index: 0)
         
         // 3) Upload transform matrix to vertex shader
-        encoder.setVertexBytes(&self.transform,
+        encoder.setVertexBytes(&transform,
                                length: MemoryLayout<simd_float4x4>.stride,
                                index: 1)
         

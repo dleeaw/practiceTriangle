@@ -12,9 +12,9 @@ import SwiftUI
 @Observable
 final class ContentModel {
     
-    let device: MTLDevice                       // Device
-    let commandQueue: MTLCommandQueue           // Command Queue
-    let triangleRenderer: TriangleRenderer      // Triangle Renderer
+    let device: MTLDevice                               // Device
+    private let commandQueue: MTLCommandQueue           // Command Queue
+    private let triangleRenderer: TriangleRenderer      // Triangle Renderer
     
     init() {
         let device = MTLCreateSystemDefaultDevice()!                // grab the GPU
@@ -29,6 +29,8 @@ final class ContentModel {
     
     func onViewResized(_ view: MTKView, _ size: CGSize) {
         
+        // adjust the aspect ratio of the triangle
+        self.triangleRenderer.aspectRatio = Float(size.width / size.height)
     }
     
     func onDraw(_ view: MTKView) {
