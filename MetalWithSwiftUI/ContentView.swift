@@ -24,6 +24,7 @@ final class ContentModel {
     private var startTime = CACurrentMediaTime()        // This is for changeTriangle
     var rotationPerSecond: Float = 0.33                 // Rotation part
     var rotation: Float = 0.0
+    var brightness: Float = 1.0                         // Brightness part
     
     init() {
         let device = MTLCreateSystemDefaultDevice()!                // grab the GPU
@@ -47,6 +48,9 @@ final class ContentModel {
         let angle = rotationPerSecond * timeElapsed * 2.0 * .pi
         rotation += angle
         self.triangleRenderer.transform = .rotate(angle: rotation, along: .init(0,0,1))
+        
+        // brightness
+        self.triangleRenderer.brightness = self.brightness
     }
     
     func onDraw(_ view: MTKView) {
@@ -84,9 +88,22 @@ struct ContentView: View {
     @State private var content = ContentModel()
     
     var body: some View {
-        MetalView(content.device,
-                  onViewResized: content.onViewResized(_:_:),
-                  onDraw: content.onDraw(_:))
+        ZStack {
+            // Metal API
+            MetalView(content.device,
+                      onViewResized: content.onViewResized(_:_:),
+                      onDraw: content.onDraw(_:))
+            .ignoresSafeArea()
+            
+            // Brightness control
+            VStack {
+                Spacer()
+                Text("Brightness: \(content.brightness, format: .percent.precision(.fractionLength(2)))")
+                Slider(value: $content.brightness, in: 0.0...1.0)
+            }
+            .padding()
+
+        }
     }
 }
 
