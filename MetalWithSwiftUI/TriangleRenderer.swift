@@ -4,6 +4,8 @@
 //
 //  Created by Donggyu Lee on 26/6/2025.
 //
+// Renderer: Vertex Buffer -> (Vertex Shader -> Fragment Shader) -> Render Pipeline ->
+//           Encoder
 
 import simd
 import Metal

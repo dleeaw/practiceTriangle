@@ -5,6 +5,11 @@
 //  Created by CurvSurf-SGKim on 6/23/25.
 //
 
+// Metal API: Define MTLDevice -> Vertex Buffer (TriangleRenderer.swift) ->
+//            Vertex Shader (shader.metal) -> Fragment Shader (shader.metal) ->
+//            Render Pipeline (TriangleRenderer) -> Command Queue ->
+//            Encoder (TriangleRenderer)
+
 import Metal
 import MetalKit
 import SwiftUI
@@ -45,7 +50,8 @@ final class ContentModel {
     }
     
     func onDraw(_ view: MTKView) {
-        
+        // Rendering: Render Pass Descriptor -> Command Buffer ->
+        //            Encoder (Triangle Renderer) -> Commit Command Buffer
         guard
             let commandBuffer = commandQueue.makeCommandBuffer(),   // Command Buffer
             let drawable = view.currentDrawable,

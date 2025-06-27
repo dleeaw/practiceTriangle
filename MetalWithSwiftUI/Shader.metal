@@ -52,4 +52,6 @@ namespace hello_triangle {
  2) Vertex Stage: Transforming each 2D vertex to 4D matrix, emitting clip-space position + color
  3) Rasterization: Filling in all fragment positions inside the triangle, interpolating "color"
  4) Fragment Stage: Applying brightness to the interpolated color, writing final pixel RGBA
+ 
+ Rasterize: Convert Vector data into pixel-unit data (픽셀화)
 */
