@@ -95,14 +95,21 @@ struct ContentView: View {
                       onDraw: content.onDraw(_:))
             .ignoresSafeArea()
             
-            // Brightness control
-            VStack {
-                Spacer()
-                Text("Brightness: \(content.brightness, format: .percent.precision(.fractionLength(2)))")
-                Slider(value: $content.brightness, in: 0.0...1.0)
+            VStack(spacing: 10) {
+                // Brightness Control
+                VStack {
+                    Spacer()
+                    Text("Brightness: \(content.brightness, format: .percent.precision(.fractionLength(2)))")
+                    Slider(value: $content.brightness, in: 0.0...1.0)
+                }
+                
+                // Rotation speed control
+                VStack {
+                    Text("Rotation speed: \(content.rotationPerSecond, format: .number.precision(.fractionLength(2)))")
+                    Slider(value: $content.rotationPerSecond, in: 0.0...2.0)
+                }
             }
             .padding()
-
         }
     }
 }
