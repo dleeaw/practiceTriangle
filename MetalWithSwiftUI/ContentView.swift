@@ -16,6 +16,10 @@ final class ContentModel {
     private let commandQueue: MTLCommandQueue           // Command Queue
     private let triangleRenderer: TriangleRenderer      // Triangle Renderer
     
+    private var startTime = CACurrentMediaTime()        // This is for changeTriangle
+    var rotationPerSecond: Float = 0.33                 // Rotation part
+    var rotation: Float = 0.0
+    
     init() {
         let device = MTLCreateSystemDefaultDevice()!                // grab the GPU
         let commandQueue = device.makeCommandQueue()!               // make a work queue
@@ -33,13 +37,27 @@ final class ContentModel {
         self.triangleRenderer.aspectRatio = Float(size.width / size.height)
     }
     
+    func changeTriangle(_ timeElapsed: Float) {
+        // rotation
+        let angle = rotationPerSecond * timeElapsed * 2.0 * .pi
+        rotation += angle
+        self.triangleRenderer.transform = .rotate(angle: rotation, along: .init(0,0,1))
+    }
+    
     func onDraw(_ view: MTKView) {
+        
         guard
             let commandBuffer = commandQueue.makeCommandBuffer(),   // Command Buffer
             let drawable = view.currentDrawable,
             let passDescriptor = view.currentRenderPassDescriptor,  // Render Pass Descriptor
             let encoder = commandBuffer.makeRenderCommandEncoder(descriptor: passDescriptor)
         else { return }
+        
+        // 0) Rotating Triangle
+        let currentTime = CACurrentMediaTime()
+        let timeElapsed = Float(currentTime - startTime)
+        changeTriangle(timeElapsed)
+        startTime = currentTime
         
         // 1) Encode my triangle's draw call
         triangleRenderer.draw(encoder)
